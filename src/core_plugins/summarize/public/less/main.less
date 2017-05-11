@@ -1,0 +1,65 @@
+@black: black;
+@grayDarkest: #222;
+@grayDarker: #333;
+@grayDark: #666;
+@gray: #999;
+@grayLight: #CCC;
+@grayLighter: #DDD;
+@grayLightest: #EEE;
+@white: white;
+
+@background: #FFF;
+@navBarBackground: #DDD;
+@lineColor: #EEE;
+@textColor: #999;
+@disabledColor: #CCC;
+@valueColor: #666;
+@topNavColor: #E4E4E4;
+@pageColor: #F6F6F6;
+
+@kibanaGray: #95a5a6;
+@esBlue: #6eadc1;
+@esRed: #d76051;
+@esYellow: #fbce47;
+@esGreen: #80c383;
+@esPink: #e8488b;
+@esPurple: #9980b2;
+
+@esAltGreen: #8ac336;
+@esCyan: #59c6c5;
+
+summarize-editor,
+.vis_editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  background-color: @pageColor;
+}
+
+.summarize__panelOptions {
+  padding: 10px;
+  background-color: @white;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
+  .vis_editor__row {
+    margin-bottom: 10px;
+  }
+
+}
+
+.summarize__container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  .vis_editor__container {
+    padding: 0;
+  }
+  .vis_editor__series {
+    .vis_editor__container {
+      padding: 5px;
+    }
+  }
+}
+
