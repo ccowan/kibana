@@ -1,4 +1,5 @@
 import buildProcessorFunction from './build_processor_function';
+import _ from 'lodash';
 import processors from './response_processors/series';
 
 export default function handleResponseBody(panel) {
@@ -10,7 +11,7 @@ export default function handleResponseBody(panel) {
     }
     return panel.columns.map(column => {
       const processor = buildProcessorFunction(processors, resp, panel, column);
-      return processor([]);
+      return _.first(processor([]));
     });
   };
 }

@@ -7,7 +7,6 @@ export function getPreviewData(req) {
     return Promise.reject(err);
   }
   return getHosts(req, panel).then(hosts => {
-    console.log(hosts);
     return getColumnData(req, panel, hosts);
   });
 }

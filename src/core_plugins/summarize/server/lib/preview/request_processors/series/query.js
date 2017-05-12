@@ -1,4 +1,5 @@
 import getBucketSize from '../../helpers/get_bucket_size';
+import _ from 'lodash';
 import getTimerange from '../../helpers/get_timerange';
 import getIntervalAndTimefield from '../../get_interval_and_timefield';
 export default function query(req, panel, host) {
@@ -24,9 +25,10 @@ export default function query(req, panel, host) {
       }
     };
     doc.query.bool.must.push(timerange);
+
     doc.query.bool.must.push({
       term: {
-        [panel.id_field]: host[panel.id_field]
+        [panel.id_field]: _.get(host, panel.id_field)
       }
     });
 

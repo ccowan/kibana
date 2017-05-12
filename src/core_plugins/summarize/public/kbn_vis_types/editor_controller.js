@@ -43,7 +43,7 @@ app.controller('SummarizeEditorController', (
   // If the model doesn't exist we need to either intialize it with a copy from
   // the $scope.vis._editableVis.params or create a new panel all together.
   if (!$scope.model) {
-    if ($scope.vis._editableVis.params.type) {
+    if ($scope.vis._editableVis.params.id) {
       $scope.model = _.assign({}, $scope.vis._editableVis.params);
     } else {
       $scope.model = createNewSummarize();
