@@ -9,6 +9,7 @@ function PanelOptions(props) {
   const handleSelectChange = createSelectHandler(props.onChange);
   const handleTextChange = createTextHandler(props.onChange);
   const indexPattern = model.index_pattern;
+  const label = model.label || '';
   const intervalOptions = [
     { label: 'Every 30 seconds', value: 30000 },
     { label: 'Every 1 Minute', value: 60000 },
@@ -34,6 +35,12 @@ function PanelOptions(props) {
             fields={fields}
             indexPattern={indexPattern} />
         </div>
+        <div className="vis_editor__label">Label</div>
+        <input
+          type="text"
+          className="vis_editor__input-grows"
+          onChange={handleTextChange('label')}
+          value={label} />
       </div>
       <IndexPattern
         model={model}

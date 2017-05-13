@@ -8,5 +8,8 @@ export function getPreviewData(req) {
   }
   return getHosts(req, panel).then(hosts => {
     return getColumnData(req, panel, hosts);
+  })
+  .then(data => {
+    return { data };
   });
 }

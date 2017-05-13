@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import getAggValue from '../../helpers/get_agg_value';
-import getDefaultDecoration from '../../helpers/get_default_decoration';
 import getSplits from '../../helpers/get_splits';
 import getLastMetric from '../../helpers/get_last_metric';
 export default function percentile(resp, panel, series) {
@@ -14,13 +13,10 @@ export default function percentile(resp, panel, series) {
         const m = _.assign({}, metric, { percent: series.value });
         return [bucket.key, getAggValue(bucket, m)];
       });
-      const decoration = getDefaultDecoration(series);
       results.push({
         id: `${percentile.id}:${split.id}`,
-        color: split.color,
         label,
         data,
-        ...decoration
       });
 
     });
