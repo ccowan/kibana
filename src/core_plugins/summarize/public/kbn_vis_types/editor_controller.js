@@ -69,6 +69,13 @@ app.controller('SummarizeEditorController', (
 
   $scope.visData = {};
   $scope.fields = {};
+  $scope.pageNumber = 1;
+
+  $scope.setPage = pageNumber => {
+    $scope.pageNumber = pageNumber;
+    fetch();
+  };
+
   // All those need to be consolidated
   $scope.$listen(queryFilter, 'fetch', fetch);
   $scope.$on('fetch', fetch);

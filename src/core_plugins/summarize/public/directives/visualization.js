@@ -9,9 +9,12 @@ app.directive('summarizeVisualization', () => {
   return {
     restrict: 'E',
     link: ($scope, $el) => {
-      const addToState = ['model', 'visData', 'reversed'];
+      const addToState = ['pageNumber', 'model', 'visData', 'reversed'];
       const Component = addScope(Visualization, $scope, addToState);
-      render(<Component className="dashboard__visualization"/>, $el[0]);
+      const handlePaginate = (pageNumber) => {
+        $scope.$evalAsync(() => $scope.setPage(pageNumber));
+      };
+      render(<Component onPaginate={handlePaginate} className="dashboard__visualization"/>, $el[0]);
       $scope.$on('$destroy', () => unmountComponentAtNode($el[0]));
     }
   };

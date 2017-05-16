@@ -23,6 +23,8 @@ class Editor extends Component {
           model={model}
           visData={this.props.visData}
           onBrush={this.props.onBrush}
+          onPaginate={this.props.onPaginate}
+          pageNumber={this.props.pageNumber}
           onChange={handleChange} />
         <EditorPanel
           fields={this.props.fields}
@@ -39,6 +41,8 @@ Editor.propTypes = {
   fields: PropTypes.object,
   model: PropTypes.object,
   onChange: PropTypes.func,
+  onPaginate: PropTypes.func,
+  pageNumber: PropTypes.number,
   visData: PropTypes.object
 };
 

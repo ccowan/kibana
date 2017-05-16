@@ -1,8 +1,13 @@
 import _ from 'lodash';
 export default function splitByEverything(req, panel) {
   return next => doc => {
-    panel.columns.forEach(column => {
-      _.set(doc, `aggs.${column.id}.filter.match_all`, {});
+    panel.columns.filter(c => !(c.aggregate_by && c.aggregate_function)).forEach(column => {
+      if (column.filter) {
+        _.set(doc, `aggs.${column.id}.filter.query_string.query`, column.filter);
+        _.set(doc, `aggs.${column.id}.filter.query_string.analyze_wildcard`, true);
+      } else {
+        _.set(doc, `aggs.${column.id}.filter.match_all`, {});
+      }
     });
     return next(doc);
   };

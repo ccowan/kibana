@@ -6,10 +6,11 @@ export function getPreviewData(req) {
     const err = new Error('You must provide an ID field.');
     return Promise.reject(err);
   }
-  return getHosts(req, panel).then(hosts => {
-    return getColumnData(req, panel, hosts);
-  })
-  .then(data => {
-    return { data };
+  return getHosts(req, panel).then(results => {
+    if (!results.total) return results;
+    return getColumnData(req, panel, results.hosts)
+      .then(data => {
+        return { data, total: results.total };
+      });
   });
 }

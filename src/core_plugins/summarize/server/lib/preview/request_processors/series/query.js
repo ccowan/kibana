@@ -32,6 +32,20 @@ export default function query(req, panel, host) {
       }
     });
 
+    const globalFilters = req.payload.filters;
+    if (globalFilters && !panel.ignore_global_filter) {
+      doc.query.bool.must = doc.query.bool.must.concat(globalFilters);
+    }
+
+    if (panel.filter) {
+      doc.query.bool.must.push({
+        query_string: {
+          query: panel.filter,
+          analyze_wildcard: true
+        }
+      });
+    }
+
     return next(doc);
 
   };

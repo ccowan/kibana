@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import getLastValue from './lib/get_last_value';
 import ticFormatter from './lib/tick_formatter';
+import calculateLabel from '../../common/calculate_label';
+import Pagination from './pagination';
 class Visualization extends Component {
 
   constructor(props) {
@@ -21,22 +22,41 @@ class Visualization extends Component {
       if (!column) return null;
       const formatter = ticFormatter(column.formatter, column.value_template);
       const key = `${rowId}-${item.id}`;
-      const value = formatter(getLastValue(item.data));
-      return (<td key={key} className="summarize__value">{ value }</td>);
+      const value = formatter(item.last);
+      let trend;
+      if (column.trend_arrows) {
+        const trendClass = item.slope > 0 ? 'fa-long-arrow-up' : 'fa-long-arrow-down';
+        trend = (
+          <span className="summarize__trend">
+            <i className={`fa ${trendClass}`}></i>
+          </span>
+        );
+      }
+      return (
+        <td key={key} className="summarize__value">
+          <span className="summarize__value-display">{ value }</span>
+          {trend}
+        </td>
+      );
     });
     return (
       <tr key={rowId}>
-        <td>{rowDisplay}</td>
+        <td className="summarize__fieldName">{rowDisplay}</td>
         {columns}
       </tr>
     );
   }
 
   renderHeader() {
-    const { model, visData } = this.props;
-    const first = _.first(visData.data);
-    const columns  = first.data.map(item => {
-      return (<th key={item.id}>{item.label}</th>);
+    const { model } = this.props;
+    const columns  = model.columns.map(item => {
+      const metric = _.last(item.metrics);
+      const label = item.label || calculateLabel(metric, item.metrics);
+      return (
+        <th
+          className="summarize__columnName"
+          key={item.id}>{label}</th>
+      );
     });
     const label = model.label || model.display_field || model.id_field;
     return (
@@ -48,10 +68,34 @@ class Visualization extends Component {
   }
 
   render() {
-    const { visData } = this.props;
-    if (!Array.isArray(visData.data)) return null;
-    const rows = visData.data.map(this.renderRow);
+    const { visData, model, pageNumber } = this.props;
     const header = this.renderHeader();
+    let rows;
+    let pagination;
+    let resultsInfo;
+    if (visData.total && _.isArray(visData.data)) {
+      rows = visData.data.map(this.renderRow);
+      pagination = (
+        <Pagination
+          currentPage={pageNumber}
+          pageSize={Number(model.page_size)}
+          total={visData.total}
+          onChange={this.props.onPaginate} />
+      );
+      resultsInfo = (
+        <div className="summarize__totalResults">
+          <div>{visData.total} results, showing page {pageNumber} of {Math.ceil(visData.total / model.page_size)}.</div>
+        </div>
+      );
+    } else {
+      rows = (
+        <tr>
+          <td
+            className="summarize__noResults"
+            colSpan={model.columns.length + 1}>No results available</td>
+        </tr>
+      );
+    }
     return(
       <div className="summarize__visualization">
         <table className="table">
@@ -62,6 +106,8 @@ class Visualization extends Component {
             {rows}
           </tbody>
         </table>
+        {pagination}
+        {resultsInfo}
       </div>
     );
   }
@@ -71,7 +117,9 @@ class Visualization extends Component {
 Visualization.propTypes = {
   visData: PropTypes.object,
   model: PropTypes.object,
-  backgroundColor: PropTypes.string
+  backgroundColor: PropTypes.string,
+  onPaginate: PropTypes.func,
+  pageNumber: PropTypes.number
 };
 
 export default Visualization;

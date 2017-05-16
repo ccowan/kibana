@@ -36,6 +36,13 @@ app.controller('SummarizeVisController', (
     });
   };
 
+  $scope.visData = {};
+  $scope.pageNumber = 1;
+  $scope.setPage = pageNumber => {
+    $scope.pageNumber = pageNumber;
+    fetch();
+  };
+
 
   $scope.model = $scope.vis.params;
   $scope.$watch('vis.params', fetch);

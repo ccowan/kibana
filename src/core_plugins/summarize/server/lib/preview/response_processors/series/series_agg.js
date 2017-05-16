@@ -3,7 +3,7 @@ import _ from 'lodash';
 import calculateLabel from '../../../../../common/calculate_label';
 export default function seriesAgg(resp, panel, series) {
   return next => results => {
-    if (series.metrics.some(m => m.type === 'series_agg')) {
+    if (series.aggregate_by && series.aggregate_function) {
 
       const targetSeries = [];
       // Filter out the seires with the matching metric and store them
@@ -15,11 +15,8 @@ export default function seriesAgg(resp, panel, series) {
         }
         return true;
       });
-      const data = series.metrics.filter(m => m.type === 'series_agg')
-        .reduce((acc, m) => {
-          const fn = SeriesAgg[m.function];
-          return fn && fn(acc) || acc;
-        }, targetSeries);
+      const fn = SeriesAgg[series.aggregate_function];
+      const data = fn(targetSeries);
       results.push({
         id: `${series.id}`,
         label: series.label || calculateLabel(_.last(series.metrics), series.metrics),

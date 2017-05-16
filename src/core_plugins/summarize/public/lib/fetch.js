@@ -12,6 +12,7 @@ export default (
     const panel = $scope.model;
     if (panel && panel.id) {
       const params = {
+        page: $scope.pageNumber,
         timerange: timefilter.getBounds(),
         filters: [dashboardContext()],
         panel

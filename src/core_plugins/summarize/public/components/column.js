@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import ColumnMetrics from './column_metrics';
+import { sortable } from 'react-anything-sortable';
 class Column extends Component {
 
   constructor(props) {
@@ -81,4 +82,4 @@ Column.propTypes = {
   sortData: PropTypes.string,
 };
 
-export default Column;
+export default sortable(Column);

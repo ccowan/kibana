@@ -47,7 +47,8 @@ class Columns extends Component {
       this.props.onChange({ columns });
     };
     return (
-      <div className="vis_editor__container">
+      <div
+        className="vis_editor__container">
         <Sortable
           dynamic={true}
           direction="vertical"

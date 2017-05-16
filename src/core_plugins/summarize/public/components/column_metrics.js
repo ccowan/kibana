@@ -55,6 +55,7 @@ function ColumnMetrics(props) {
         <ColumnOptions
           fields={props.fields}
           model={props.model}
+          panel={props.panel}
           onChange={props.onChange} />
       );
     }

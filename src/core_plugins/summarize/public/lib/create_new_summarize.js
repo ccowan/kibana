@@ -7,6 +7,9 @@ export function createNewSummarize() {
     time_field: '@timestamp',
     index_pattern: '*',
     interval: 'auto',
-    run_interval: 60000
+    run_interval: 60000,
+    page_size: 10,
+    filter: '',
+    ignore_global_filter: 0
   };
 }

@@ -3,19 +3,13 @@ import FieldSelect from '../../../metrics/public/components/aggs/field_select';
 import IndexPattern from '../../../metrics/public/components/index_pattern';
 import createSelectHandler from '../../../metrics/public/components/lib/create_select_handler';
 import createTextHandler from '../../../metrics/public/components/lib/create_text_handler';
-import Select from 'react-select';
+import YesNo from './yes_no';
 function PanelOptions(props) {
   const { model, fields, onChange } = props;
   const handleSelectChange = createSelectHandler(props.onChange);
   const handleTextChange = createTextHandler(props.onChange);
   const indexPattern = model.index_pattern;
   const label = model.label || '';
-  const intervalOptions = [
-    { label: 'Every 30 seconds', value: 30000 },
-    { label: 'Every 1 Minute', value: 60000 },
-    { label: 'Every 5 Minutes', value: 300000 },
-    { label: 'Every 10 Minutes', value: 600000 },
-  ];
   return (
     <div className="summarize__panelOptions">
       <div className="vis_editor__row">
@@ -47,19 +41,24 @@ function PanelOptions(props) {
         fields={fields}
         onChange={onChange} />
       <div className="vis_editor__row">
-        <div className="vis_editor__label">Index to write summarized results</div>
+        <div className="vis_editor__label">Number of Rows to Display</div>
+        <input
+          type="number" step={1}
+          className="vis_editor__input"
+          onChange={handleTextChange('page_size')}
+          size={3}
+          value={model.page_size}/>
+        <div className="vis_editor__label">Panel Filter</div>
         <input
           type="text"
           className="vis_editor__input-grows"
-          onChange={handleTextChange('target_index')}
-          value={model.target_index} />
-        <div className="vis_editor__label">Indexing Interval</div>
-        <div className="vis_editor__row_item">
-          <Select
-            options={intervalOptions}
-            onChange={handleSelectChange('run_interval')}
-            value={model.run_interval} />
-        </div>
+          onChange={handleTextChange('filter')}
+          value={model.filter}/>
+        <div className="vis_editor__label">Ignore Global Filter</div>
+        <YesNo
+          value={model.ignore_global_filter}
+          name="ignore_global_filter"
+          onChange={props.onChange}/>
       </div>
     </div>
   );

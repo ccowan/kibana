@@ -65,6 +65,8 @@ class EditorVisualization extends Component {
             model={this.props.model}
             onBrush={this.props.onBrush}
             onChange={this.handleChange}
+            onPaginate={this.props.onPaginate}
+            pageNumber={this.props.pageNumber}
             visData={this.props.visData} />
         </div>
         <div
@@ -82,6 +84,8 @@ EditorVisualization.propTypes = {
   model: PropTypes.object,
   onBrush: PropTypes.func,
   onChange: PropTypes.func,
+  onPaginate: PropTypes.func,
+  pageNumber: PropTypes.number,
   visData: PropTypes.object
 };
 

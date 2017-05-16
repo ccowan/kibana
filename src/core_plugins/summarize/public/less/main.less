@@ -72,12 +72,72 @@ summarize-editor,
   height: 250px;
   line-height: normal;
   background-color: @white;
+  overflow: auto;
+}
 
+.summarize__visualization table {
+  border-bottom: 2px solid @lineColor;
 }
 
 .summarize__value {
   text-align: right;
+  font-size: 1.5em;
+  vertical-align: middle;
+}
+
+tbody > tr > td.summarize__fieldName {
+  font-size: 1.1em;
+  vertical-align: middle;
+}
+
+.summarize__columnName {
+  text-align: right;
+}
+
+.summarize__trend {
+  margin-left: 4px;
+}
+
+.summarize__noResults {
+  text-align: center;
   font-size: 1.2em;
+}
+
+.summarize__pagination {
+  display: flex;
+  justify-content: center;
+  flex: 0 0 auto;
+
+  ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+  }
+}
+
+.summarize__pagination-page,
+.summarize__pagination-prev,
+.summarize__pagination-next,
+.summarize__pagination-currentPage {
+  display: inline-block;
+  padding: 4px 6px;
+  background-color: @grayLightest;
+  margin-left: 1px;
+  text-align: center;
+}
+
+.summarize__pagination-currentPage {
   font-weight: bold;
 }
 
+.summarize__totalResults {
+  color: @grayLight;
+  text-align: center;
+}
+
+summarize-visualization,
+.summarize__dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
