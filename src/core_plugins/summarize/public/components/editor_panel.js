@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import PanelOptions from './panel_options';
 import Columns from './columns';
+import IndexingOptions from './indexing_options';
 class EditorPanel extends Component {
 
   constructor(props) {
@@ -23,6 +24,14 @@ class EditorPanel extends Component {
           model={this.props.model}
           visData={this.props.visData} />
       );
+    } else if (selectedTab === 'indexing') {
+      view = (
+        <IndexingOptions
+          fields={this.props.fields}
+          onChange={this.props.onChange}
+          model={this.props.model}
+          visData={this.props.visData} />
+      );
     } else {
       view = (
         <PanelOptions
@@ -40,6 +49,8 @@ class EditorPanel extends Component {
               onClick={() => this.switchTab('options')}>Panel Options</div>
             <div className={`kbnTabs__tab${selectedTab === 'columns' && '-active' || ''}`}
               onClick={() => this.switchTab('columns')}>Columns</div>
+            <div className={`kbnTabs__tab${selectedTab === 'indexing' && '-active' || ''}`}
+              onClick={() => this.switchTab('indexing')}>Indexing Options</div>
           </div>
           {view}
         </div>

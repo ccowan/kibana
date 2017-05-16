@@ -92,4 +92,3 @@ app.controller('SummarizeEditorController', (
   $scope.$on('$destroy', metricsExecutor.destroy);
 
 });
-

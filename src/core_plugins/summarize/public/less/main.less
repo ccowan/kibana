@@ -41,12 +41,34 @@ summarize-editor,
   background-color: @white;
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
+  flex: 1 0 auto;
 
   .vis_editor__row {
     margin-bottom: 10px;
   }
 
+}
+
+.summarize__indexOptions {
+  padding: 10px;
+  background-color: @white;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  justify-content: space-around;
+
+  .vis_editor__row {
+    margin-bottom: 10px;
+  }
+}
+
+.summarize__explanation {
+  p {
+    font-size: 1.2em;
+  }
+  button {
+    margin: 0;
+  }
 }
 
 .summarize__container {

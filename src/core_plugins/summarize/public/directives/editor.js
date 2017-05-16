@@ -17,7 +17,10 @@ app.directive('summarizeEditor', () => {
       const handleChange = part => {
         $scope.$evalAsync(() => angular.copy(part, $scope.model));
       };
-      render(<Component model={$scope.model} onPaginate={handlePaginate} onChange={handleChange} />, $el[0]);
+      render(<Component
+        model={$scope.model}
+        onPaginate={handlePaginate}
+        onChange={handleChange} />, $el[0]);
       $scope.$on('$destroy', () => {
         unmountComponentAtNode($el[0]);
       });
