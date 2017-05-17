@@ -23,6 +23,10 @@ export function CommonPageProvider({ getService, getPageObjects }) {
       return getUrl.baseUrl(config.get('servers.elasticsearch'));
     }
 
+    /**
+     * @param {string} appName As defined in the apps objects in test/server_config.js
+     * @param {string} subUrl The route after the hash (#)
+     */
     navigateToUrl(appName, subUrl) {
       const appConfig = Object.assign({}, config.get(['apps', appName]), {
         // Overwrite the default hash with the URL we really want.
@@ -223,6 +227,10 @@ export function CommonPageProvider({ getService, getPageObjects }) {
       log.debug('Clicking modal confirm');
       await testSubjects.click('confirmModalConfirmButton');
       await this.ensureModalOverlayHidden();
+    }
+
+    async pressEnterKey() {
+      await remote.pressKeys('\uE007');
     }
 
     async clickCancelOnModal() {
