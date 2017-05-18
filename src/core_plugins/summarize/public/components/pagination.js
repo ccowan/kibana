@@ -27,6 +27,7 @@ class Pagination extends Component {
   render() {
     const { currentPage, pageSize, total, windowSize, onChange } = this.props;
     const totalPages = Math.ceil(total / pageSize);
+    if (totalPages === 1) return null;
     let start;
     let end;
 

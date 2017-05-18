@@ -37,7 +37,15 @@ function indexVis(server, doc) {
     if (visQueue[id]) clearTimeout(visQueue[id]);
     if (model.indexing) {
       server.log(['debug', 'summarize'], `Indexing ${vis.title} (${id})`);
-      runIndexing(server, doc).then(() => {
+      const start = Date.now();
+      runIndexing(server, doc).then(docs => {
+        const timing = Date.now() - start;
+        server.log(['debug', 'summarize', 'benchmark'], {
+          time: timing,
+          id: doc._id,
+          total: docs.length,
+          tmpl: `Indexing for ${doc.title} (<%= id %>) completed in <%= time %>ms, <%= total %> documents indexed.`
+        });
         visQueue[id] = startIndexing(server, vis);
       });
     } else if (visQueue[id]) {

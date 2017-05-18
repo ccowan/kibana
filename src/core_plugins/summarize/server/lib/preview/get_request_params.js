@@ -1,7 +1,7 @@
 import buildRequestBody from './build_request_body';
-export default (req, panel, hosts) => {
+export default (req, panel, entities) => {
   const bodies = [];
-  hosts.forEach(host => {
+  entities.forEach(entity => {
     bodies.push({
       index: panel.index_pattern,
       ignore: [404],
@@ -9,7 +9,7 @@ export default (req, panel, hosts) => {
       requestTimeout: 90000,
       ignoreUnavailable: true,
     });
-    bodies.push(buildRequestBody(req, panel, host));
+    bodies.push(buildRequestBody(req, panel, entity));
   });
   return bodies;
 };

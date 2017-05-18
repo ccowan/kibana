@@ -1,4 +1,4 @@
-import { getHosts } from './preview/get_hosts';
+import { getEntities } from './preview/get_entities';
 import { getColumnData } from './preview/get_column_data';
 export function getPreviewData(req) {
   const { panel } = req.payload;
@@ -6,9 +6,9 @@ export function getPreviewData(req) {
     const err = new Error('You must provide an ID field.');
     return Promise.reject(err);
   }
-  return getHosts(req, panel).then(results => {
+  return getEntities(req, panel).then(results => {
     if (!results.total) return results;
-    return getColumnData(req, panel, results.hosts)
+    return getColumnData(req, panel, results.entities)
       .then(data => {
         return { data, total: results.total };
       });

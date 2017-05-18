@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-export function getAllHosts(server, doc) {
+export function getAllEntities(server, doc) {
   const panel = doc.visState.params;
   const client = server.plugins.elasticsearch.getCluster('data').callWithInternalUser;
 
@@ -11,7 +11,7 @@ export function getAllHosts(server, doc) {
     index: panel.index_pattern,
     body: {
       aggs: {
-        hostCount: {
+        entityCount: {
           cardinality: { field: panel.id_field }
         }
       }
@@ -20,7 +20,7 @@ export function getAllHosts(server, doc) {
 
   return client('search', params)
     .then(resp => {
-      const totalHosts = _.get(resp, 'aggregations.hostCount.value');
+      const totalEntities = _.get(resp, 'aggregations.entityCount.value');
       const params = {
         index: panel.index_pattern,
         body: {
@@ -42,9 +42,11 @@ export function getAllHosts(server, doc) {
           collapse: { field: panel.id_field },
           _source: [panel.id_field],
           from: 0,
-          size: totalHosts
+          size: totalEntities
         }
       };
+
+      if (panel.display_field) params.body._source.push(panel.display_field);
 
       return client('search', params);
     })

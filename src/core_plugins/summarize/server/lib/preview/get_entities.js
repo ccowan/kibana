@@ -1,7 +1,7 @@
 import getIntervalAndTimefield from './get_interval_and_timefield';
 import _ from 'lodash';
 import getTimerange from './helpers/get_timerange';
-export function getHosts(req, panel) {
+export function getEntities(req, panel) {
   const { callWithRequest } = req.server.plugins.elasticsearch.getCluster('data');
   const { timeField } = getIntervalAndTimefield(panel);
   const { from, to } = getTimerange(req);
@@ -37,7 +37,7 @@ export function getHosts(req, panel) {
       from: pageFrom,
       size: pageSize,
       aggs: {
-        hostCount: {
+        entityCount: {
           cardinality: { field: panel.id_field }
         }
       }
@@ -63,8 +63,8 @@ export function getHosts(req, panel) {
   return callWithRequest(req, 'search', params)
     .then(resp => {
       return {
-        hosts: resp.hits.hits.map(doc => doc._source),
-        total: _.get(resp, 'aggregations.hostCount.value')
+        entitys: resp.hits.hits.map(doc => doc._source),
+        total: _.get(resp, 'aggregations.entityCount.value')
       };
     });
 }

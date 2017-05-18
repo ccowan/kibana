@@ -15,6 +15,7 @@ export function getData(req) {
 
   const params = {
     index: panel.target_index,
+    ignore: [404],
     body: {
       query: { bool: { must: [] } },
       sort: [{ [sortField]: { order } }],

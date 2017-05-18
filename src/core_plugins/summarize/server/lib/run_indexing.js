@@ -1,22 +1,22 @@
-import { getAllHosts } from './get_all_hosts';
+import { getAllEntities } from './get_all_entities';
 import moment from 'moment';
 import _ from 'lodash';
 import Promise from 'bluebird';
 import { getColumnData } from './preview/get_column_data';
 export function runIndexing(server, doc) {
-  return getAllHosts(server, doc).then(hosts => {
-    if (!hosts.length) return Promise.resolve();
+  return getAllEntities(server, doc).then(docs => {
+    if (!docs.length) return Promise.resolve();
 
-    const batches = hosts.reduce((acc, host) => {
+    const batches = docs.reduce((acc, doc) => {
       if(_.last(acc).length < 50) {
-        _.last(acc).push(host);
+        _.last(acc).push(doc);
       } else {
-        acc.push([host]);
+        acc.push([doc]);
       }
       return acc;
     }, [[]]);
 
-    const client = server.plugins.elasticsearch.getCluster('data').callWithInternalUser;
+    const client = server.plugins.elasticsearch.getCluster('summarize').callWithInternalUser;
     const panel = doc.visState.params;
     const from = moment.utc().subtract(panel.from_value, panel.from_units);
     const to = moment.utc().subtract(panel.to_value, panel.to_units);
@@ -32,8 +32,8 @@ export function runIndexing(server, doc) {
       }
     };
 
-    Promise.map(batches, (hosts) => {
-      return getColumnData(req, panel, hosts, client)
+    return Promise.map(batches, (docs) => {
+      return getColumnData(req, panel, docs, client)
         .then(results => {
           const body = [];
           results.forEach(doc => {
@@ -52,6 +52,8 @@ export function runIndexing(server, doc) {
           });
           return client('bulk', { body });
         });
+    }).then(() => {
+      return docs;
     });
 
   });
