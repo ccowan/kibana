@@ -9,7 +9,7 @@ app.directive('summarizeEditor', () => {
   return {
     restrict: 'E',
     link: ($scope, $el) => {
-      const addToState = ['pageNumber', 'embedded', 'fields', 'visData'];
+      const addToState = ['sort', 'pageNumber', 'embedded', 'fields', 'visData'];
       const Component = addScope(Editor, $scope, addToState);
       const handlePaginate = (pageNumber) => {
         $scope.$evalAsync(() => $scope.setPage(pageNumber));
@@ -17,9 +17,13 @@ app.directive('summarizeEditor', () => {
       const handleChange = part => {
         $scope.$evalAsync(() => angular.copy(part, $scope.model));
       };
+      const handleSort = sort => {
+        $scope.$evalAsync(() => $scope.setSort(sort));
+      };
       render(<Component
         model={$scope.model}
         onPaginate={handlePaginate}
+        onSort={handleSort}
         onChange={handleChange} />, $el[0]);
       $scope.$on('$destroy', () => {
         unmountComponentAtNode($el[0]);

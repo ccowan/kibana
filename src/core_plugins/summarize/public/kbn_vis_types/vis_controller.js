@@ -43,6 +43,12 @@ app.controller('SummarizeVisController', (
     fetch();
   };
 
+  $scope.sort = { field: null, order: 'asc' };
+  $scope.setSort = sort => {
+    $scope.sort = sort;
+    fetch();
+  };
+
 
   $scope.model = $scope.vis.params;
   $scope.$watch('vis.params', fetch);

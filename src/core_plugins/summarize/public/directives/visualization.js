@@ -9,12 +9,18 @@ app.directive('summarizeVisualization', () => {
   return {
     restrict: 'E',
     link: ($scope, $el) => {
-      const addToState = ['pageNumber', 'model', 'visData', 'reversed'];
+      const addToState = ['sort', 'pageNumber', 'model', 'visData', 'reversed'];
       const Component = addScope(Visualization, $scope, addToState);
       const handlePaginate = (pageNumber) => {
         $scope.$evalAsync(() => $scope.setPage(pageNumber));
       };
-      render(<Component onPaginate={handlePaginate} className="dashboard__visualization"/>, $el[0]);
+      const handleSort = sort => {
+        $scope.$evalAsync(() => $scope.setSort(sort));
+      };
+      render(<Component
+        onPaginate={handlePaginate}
+        onSort={handleSort}
+        className="dashboard__visualization"/>, $el[0]);
       $scope.$on('$destroy', () => unmountComponentAtNode($el[0]));
     }
   };

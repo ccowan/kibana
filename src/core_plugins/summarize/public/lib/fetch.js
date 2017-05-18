@@ -10,18 +10,20 @@ export default (
   const notify = new Notifier({ location: 'Metrics' });
   return $scope => () => {
     const panel = $scope.model;
-    if (panel && panel.id) {
+    if (panel && panel.id && panel.id_field) {
       const params = {
         page: $scope.pageNumber,
         timerange: timefilter.getBounds(),
         filters: [dashboardContext()],
+        sort: $scope.sort,
         panel
       };
 
       try {
         const maxBuckets = config.get('metrics:max_buckets');
         validateInterval(timefilter, panel, maxBuckets);
-        return $http.post('../api/summarize/preview', params)
+        const endpoint = panel.indexing ? 'data' : 'preview';
+        return $http.post(`../api/summarize/${endpoint}`, params)
           .success(resp => {
             $scope.visData = resp;
           })

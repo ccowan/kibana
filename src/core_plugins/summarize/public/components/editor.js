@@ -25,6 +25,8 @@ class Editor extends Component {
           onBrush={this.props.onBrush}
           onPaginate={this.props.onPaginate}
           pageNumber={this.props.pageNumber}
+          onSort={this.props.onSort}
+          sort={this.props.sort}
           onChange={handleChange} />
         <EditorPanel
           fields={this.props.fields}
@@ -43,6 +45,8 @@ Editor.propTypes = {
   onChange: PropTypes.func,
   onPaginate: PropTypes.func,
   pageNumber: PropTypes.number,
+  sort: PropTypes.object,
+  onSort: PropTypes.func,
   visData: PropTypes.object
 };
 

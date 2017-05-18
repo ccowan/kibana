@@ -70,6 +70,12 @@ app.controller('SummarizeEditorController', (
   $scope.visData = {};
   $scope.fields = {};
   $scope.pageNumber = 1;
+  $scope.sort = { field: null, order: 'asc' };
+
+  $scope.setSort = sort => {
+    $scope.sort = sort;
+    fetch();
+  };
 
   $scope.setPage = pageNumber => {
     $scope.pageNumber = pageNumber;

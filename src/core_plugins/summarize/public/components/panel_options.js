@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import FieldSelect from '../../../metrics/public/components/aggs/field_select';
+import FieldSelect from './aggs/field_select';
 import IndexPattern from '../../../metrics/public/components/index_pattern';
-import createSelectHandler from '../../../metrics/public/components/lib/create_select_handler';
-import createTextHandler from '../../../metrics/public/components/lib/create_text_handler';
+import createSelectHandler from './lib/create_select_handler';
+import createTextHandler from './lib/create_text_handler';
 import YesNo from './yes_no';
 function PanelOptions(props) {
   const { model, fields, onChange } = props;
@@ -10,12 +10,17 @@ function PanelOptions(props) {
   const handleTextChange = createTextHandler(props.onChange);
   const indexPattern = model.index_pattern;
   const label = model.label || '';
+  let fieldIdClassName;
+  if (!model.id_field) {
+    fieldIdClassName = 'summarize__selectError';
+  }
   return (
     <div className="summarize__panelOptions">
       <div className="vis_editor__row">
         <div className="vis_editor__label">ID Field</div>
         <div className="vis_editor__row_item">
           <FieldSelect
+            className={fieldIdClassName}
             value={model.id_field}
             onChange={handleSelectChange('id_field')}
             fields={fields}

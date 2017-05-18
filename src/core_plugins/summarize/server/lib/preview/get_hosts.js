@@ -10,6 +10,9 @@ export function getHosts(req, panel) {
   const pageSize = req.payload.pageSize || panel.page_size || 20;
   const pageFrom = ((page - 1) * pageSize);
 
+  const sortField = panel.display_field || panel.id_field;
+  const order = _.get(req, 'payload.sort.order', 'asc');
+
   const params = {
     index: panel.index_pattern,
     body: {
@@ -30,7 +33,7 @@ export function getHosts(req, panel) {
       },
       collapse: { field: panel.id_field },
       _source: [panel.id_field],
-      sort: [{ [panel.id_field]: { order: 'asc' } }],
+      sort: [{ [sortField]: { order } }],
       from: pageFrom,
       size: pageSize,
       aggs: {

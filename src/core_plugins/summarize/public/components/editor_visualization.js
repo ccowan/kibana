@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import Visualization from './visualization';
+import Error from './error';
 
 class EditorVisualization extends Component {
 
@@ -47,18 +48,19 @@ class EditorVisualization extends Component {
   }
 
   render() {
+    const { model } = this.props;
     const style = { height: this.state.height };
     if (this.state.dragging) {
       style.userSelect = 'none';
     }
     const visBackgroundColor = '#FFF';
-    return (
-      <div>
-        <div
-          style={style}
-          data-shared-item={true}
-          ref={(el) => this.visDiv = el}
-          className="vis_editor__visualization">
+    let body;
+    if (!model.id_field) {
+      body = (
+        <Error message="You must supply an ID field." />
+      );
+    } else {
+      body = (
           <Visualization
             backgroundColor={visBackgroundColor}
             className="dashboard__visualization"
@@ -67,7 +69,19 @@ class EditorVisualization extends Component {
             onChange={this.handleChange}
             onPaginate={this.props.onPaginate}
             pageNumber={this.props.pageNumber}
+            sort={this.props.sort}
+            onSort={this.props.onSort}
             visData={this.props.visData} />
+      );
+    }
+    return (
+      <div>
+        <div
+          style={style}
+          data-shared-item={true}
+          ref={(el) => this.visDiv = el}
+          className="vis_editor__visualization">
+          {body}
         </div>
         <div
           className="vis_editor__visualization-draghandle"
@@ -86,6 +100,8 @@ EditorVisualization.propTypes = {
   onChange: PropTypes.func,
   onPaginate: PropTypes.func,
   pageNumber: PropTypes.number,
+  sort: PropTypes.object,
+  onSort: PropTypes.func,
   visData: PropTypes.object
 };
 
