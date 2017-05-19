@@ -9,15 +9,19 @@ class Pagination extends Component {
 
   renderPage(page) {
     const { currentPage, onChange } = this.props;
+    let reversedClass = '';
+    if (this.props.reversed) {
+      reversedClass = 'reversed';
+    }
     if (currentPage === page + 1) {
       return (
-        <li className="summarize__pagination-currentPage" key={`pagination-${page}`}>
+        <li className={`summarize__pagination-currentPage ${reversedClass}`} key={`pagination-${page}`}>
           {page + 1}
         </li>
       );
     } else {
       return (
-        <li className="summarize__pagination-page" key={`pagination-${page}`}>
+        <li className={`summarize__pagination-page ${reversedClass}`} key={`pagination-${page}`}>
           <a onClick={() => onChange(page + 1)}>{page + 1}</a>
         </li>
       );
@@ -34,6 +38,10 @@ class Pagination extends Component {
     const middle = Math.ceil(windowSize / 2);
     const middlePlusOne = middle + 1;
     const middleMinusOne = middle - 1;
+    let reversedClass = '';
+    if (this.props.reversed) {
+      reversedClass = 'reversed';
+    }
 
     if (totalPages <= windowSize) {
       start = 1;
@@ -56,7 +64,7 @@ class Pagination extends Component {
     let prev;
     if (currentPage > 1) {
       prev = (
-        <li className="summarize__pagination-prev">
+        <li className={`summarize__pagination-prev ${reversedClass}`}>
           <a onClick={() => onChange(currentPage - 1)}>
             <i className="fa fa-chevron-left"></i>
           </a>
@@ -67,7 +75,7 @@ class Pagination extends Component {
     let next;
     if (currentPage < totalPages) {
       next = (
-        <li className="summarize__pagination-next">
+        <li className={`summarize__pagination-next ${reversedClass}`}>
           <a onClick={() => onChange(currentPage + 1)}>
             <i className="fa fa-chevron-right"></i>
           </a>
@@ -98,7 +106,8 @@ Pagination.propTypes = {
   currentPage: PropTypes.number,
   pageSize: PropTypes.number,
   total: PropTypes.number,
-  windowSize: PropTypes.number
+  windowSize: PropTypes.number,
+  reversed: PropTypes.bool
 };
 
 export default Pagination;

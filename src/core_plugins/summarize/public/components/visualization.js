@@ -3,6 +3,21 @@ import React, { Component, PropTypes } from 'react';
 import ticFormatter from './lib/tick_formatter';
 import calculateLabel from '../../common/calculate_label';
 import Pagination from './pagination';
+
+function getColor(rules, colorKey, value) {
+  let color;
+  if (rules) {
+    rules.forEach((rule) => {
+      if (rule.opperator && rule.value != null) {
+        if (_[rule.opperator](value, rule.value)) {
+          color = rule[colorKey];
+        }
+      }
+    });
+  }
+  return color;
+}
+
 class Visualization extends Component {
 
   constructor(props) {
@@ -33,8 +48,9 @@ class Visualization extends Component {
           </span>
         );
       }
+      const style = { color: getColor(column.color_rules, 'text', item.last) };
       return (
-        <td key={`${rowId}-${key}`} className="summarize__value">
+        <td key={`${rowId}-${key}`} className="summarize__value" style={style}>
           <span className="summarize__value-display">{ value }</span>
           {trend}
         </td>
@@ -110,6 +126,12 @@ class Visualization extends Component {
     let rows;
     let pagination;
     let resultsInfo;
+    let reversedClass = '';
+
+    if (this.props.reversed) {
+      reversedClass = 'reversed';
+    }
+
     if (visData.total && _.isArray(visData.data)) {
       rows = visData.data.map(this.renderRow);
       pagination = (
@@ -117,10 +139,11 @@ class Visualization extends Component {
           currentPage={pageNumber}
           pageSize={Number(model.page_size)}
           total={visData.total}
+          reversed={this.props.reversed}
           onChange={this.props.onPaginate} />
       );
       resultsInfo = (
-        <div className="summarize__totalResults">
+        <div className={`summarize__totalResults ${reversedClass}`}>
           <div>{visData.total} results, showing page {pageNumber} of {Math.ceil(visData.total / model.page_size)}.</div>
         </div>
       );
@@ -134,7 +157,7 @@ class Visualization extends Component {
       );
     }
     return(
-      <div className="summarize__visualization">
+      <div className={`summarize__visualization ${reversedClass}`}>
         <table className="table">
           <thead>
             {header}
@@ -158,7 +181,8 @@ Visualization.propTypes = {
   onPaginate: PropTypes.func,
   sort: PropTypes.object,
   onSort: PropTypes.func,
-  pageNumber: PropTypes.number
+  pageNumber: PropTypes.number,
+  reversed: PropTypes.bool
 };
 
 export default Visualization;

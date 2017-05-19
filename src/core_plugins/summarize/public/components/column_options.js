@@ -1,12 +1,24 @@
 import React, { Component, PropTypes } from 'react';
+import uuid from 'node-uuid';
 import DataFormatPicker from './data_format_picker';
 import createSelectHandler from './lib/create_select_handler';
 import createTextHandler from './lib/create_text_handler';
 import FieldSelect from './aggs/field_select';
 import Select from 'react-select';
 import YesNo from './yes_no';
+import ColorRules from '../../../metrics/public/components/color_rules';
 
 class ColumnOptions extends Component {
+
+  componentWillMount() {
+    const { model } = this.props;
+    if (!model.color_rules || (model.color_rules && model.color_rules.length === 0)) {
+      this.props.onChange({
+        color_rules: [{ id: uuid.v1() }]
+      });
+    }
+  }
+
   render() {
     const defaults = { offset_time: '', value_template: '' };
     const model = { ...defaults, ...this.props.model };
@@ -66,6 +78,15 @@ class ColumnOptions extends Component {
                 options={functionOptions}
                 onChange={handleSelectChange('aggregate_function')}/>
             </div>
+          </div>
+          <div className="vis_editor__series_config-row summarize__colorRules">
+            <ColorRules
+              primaryName="text"
+              primaryVarName="text"
+              hideSecondary={true}
+              model={model}
+              onChange={this.props.onChange}
+              name="color_rules"/>
           </div>
         </div>
       </div>

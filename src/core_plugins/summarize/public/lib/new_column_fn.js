@@ -4,6 +4,9 @@ export function newColumnFn() {
   return {
     id: uuid.v1(),
     metrics: [newMetricFn()],
-    formatter: 'number'
+    formatter: 'number',
+    color_rules: [
+      { id: uuid.v1() }
+    ]
   };
 }

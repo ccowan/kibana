@@ -93,12 +93,15 @@ summarize-editor,
   width: 100%;
   height: 250px;
   line-height: normal;
-  background-color: @white;
   overflow: auto;
 }
 
 .summarize__visualization table {
-  border-bottom: 2px solid @lineColor;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.summarize__visualization.reversed table {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .summarize__value {
@@ -143,9 +146,12 @@ tbody > tr > td.summarize__fieldName {
 .summarize__pagination-currentPage {
   display: inline-block;
   padding: 4px 6px;
-  background-color: @grayLightest;
+  background-color: rgba(0, 0, 0, 0.1);
   margin-left: 1px;
   text-align: center;
+  &.reversed {
+    background-color: rgba(255,255,255, 0.1);
+  }
 }
 
 .summarize__pagination-currentPage {
@@ -153,7 +159,10 @@ tbody > tr > td.summarize__fieldName {
 }
 
 .summarize__totalResults {
-  color: @grayLight;
+  color: rgba(0, 0, 0, 0.3);
+  &.reversed {
+    color: rgba(255, 255, 255, 0.3);
+  }
   text-align: center;
 }
 
@@ -167,5 +176,18 @@ summarize-visualization,
 .summarize__selectError {
   .Select-control {
     border-color: @esRed;
+  }
+}
+
+.summarize__colorRules {
+  .color_rules__rule {
+    padding: 0;
+  }
+
+  .color_rules__label {
+    color: @gray;
+    &:first-child {
+      margin: 0 10px 0 0;
+    }
   }
 }
