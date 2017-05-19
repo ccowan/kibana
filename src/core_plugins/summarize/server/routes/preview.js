@@ -9,6 +9,7 @@ export default (server) => {
       return getPreviewData(req)
         .then(reply)
         .catch(err => {
+          console.log(err.stack);
           reply(Boom.wrap(err, 400));
         });
     }

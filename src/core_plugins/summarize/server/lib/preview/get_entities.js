@@ -63,7 +63,7 @@ export function getEntities(req, panel) {
   return callWithRequest(req, 'search', params)
     .then(resp => {
       return {
-        entitys: resp.hits.hits.map(doc => doc._source),
+        entities: resp.hits.hits.map(doc => doc._source),
         total: _.get(resp, 'aggregations.entityCount.value')
       };
     });

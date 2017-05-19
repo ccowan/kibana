@@ -2,6 +2,8 @@ import { getVisualizations } from './get_visualizations';
 import { getVis } from './get_vis';
 import Promise from 'bluebird';
 import { runIndexing } from './run_indexing';
+import { createMappings } from './create_mappings';
+
 
 const visQueue = {};
 
@@ -31,22 +33,24 @@ function startIndexing(server, doc) {
 }
 
 function indexVis(server, doc) {
-  getVis(server, doc).then(vis => {
-    const id = doc._id;
-    const model = doc.visState.params;
+  return getVis(server, doc).then(vis => {
+    const id = vis._id;
+    const model = vis.visState.params;
     if (visQueue[id]) clearTimeout(visQueue[id]);
     if (model.indexing) {
       server.log(['debug', 'summarize'], `Indexing ${vis.title} (${id})`);
-      const start = Date.now();
-      runIndexing(server, doc).then(docs => {
-        const timing = Date.now() - start;
-        server.log(['debug', 'summarize', 'benchmark'], {
-          time: timing,
-          id: doc._id,
-          total: docs.length,
-          tmpl: `Indexing for ${doc.title} (<%= id %>) completed in <%= time %>ms, <%= total %> documents indexed.`
+      return createMappings(server, vis).then(() => {
+        const start = Date.now();
+        return runIndexing(server, vis).then(docs => {
+          const timing = Date.now() - start;
+          server.log(['debug', 'summarize', 'benchmark'], {
+            time: timing,
+            id: vis._id,
+            total: docs.length,
+            tmpl: `Indexing for ${vis.title} (<%= id %>) completed in <%= time %>ms, <%= total %> documents indexed.`
+          });
+          visQueue[id] = startIndexing(server, vis);
         });
-        visQueue[id] = startIndexing(server, vis);
       });
     } else if (visQueue[id]) {
       delete visQueue[id];

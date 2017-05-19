@@ -7,7 +7,7 @@ export function getData(req) {
   const pageFrom = ((page - 1) * pageSize);
 
   let sortField = _.get(req, 'payload.sort.field');
-  if (!sortField) sortField = `${panel.display_field || panel.id_field}.keyword`;
+  if (!sortField) sortField = panel.display_field || panel.id_field;
 
   const order = _.get(req, 'payload.sort.order', 'asc');
 

@@ -48,6 +48,15 @@ export function getAllEntities(server, doc) {
 
       if (panel.display_field) params.body._source.push(panel.display_field);
 
+      if (panel.filter) {
+        params.body.query.bool.must.push({
+          query_string: {
+            query: panel.filter,
+            analyze_wildcard: true
+          }
+        });
+      }
+
       return client('search', params);
     })
     .then(resp => {
