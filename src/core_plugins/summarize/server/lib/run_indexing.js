@@ -36,6 +36,7 @@ export function runIndexing(server, doc) {
       return getColumnData(req, panel, docs, client)
         .then(results => {
           const body = [];
+          if (!results) return Promise.resolve([]);
           results.forEach(doc => {
             const _id = _.get(doc, panel.id_field);
             body.push({
