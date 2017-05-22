@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import Visualization from './visualization';
+import Toggle from 'react-toggle';
 import Error from './error';
 
 class EditorVisualization extends Component {
@@ -48,7 +49,7 @@ class EditorVisualization extends Component {
   }
 
   render() {
-    const { model } = this.props;
+    const { model, dirty, autoApply } = this.props;
     const style = { height: this.state.height };
     if (this.state.dragging) {
       style.userSelect = 'none';
@@ -74,6 +75,33 @@ class EditorVisualization extends Component {
             visData={this.props.visData} />
       );
     }
+
+    const applyButtonClassName = dirty ? 'thor__button-solid-default' : 'thor__button-outlined-grayLight';
+    let applyMessage = 'The latest changes have been applied.';
+    if (dirty) applyMessage = 'The changes to this visualization have not been applied.';
+    if (autoApply) applyMessage = 'The changes will be automatically applied.';
+    const applyButton = (
+      <div className="vis_editor__dirty_controls">
+        <div className="vis_editor__dirty_controls-toggle-label">Auto Apply</div>
+        <div className="vis_editor__dirty_controls-toggle">
+          <Toggle
+            defaultChecked={autoApply}
+            icons={false}
+            onChange={this.props.onToggleAutoApply} />
+        </div>
+        <div className="vis_editor__dirty_controls-button">
+          <button
+            disabled={!dirty}
+            onClick={this.props.onCommit}
+            className={`${applyButtonClassName} md`}>
+            <i className="fa fa-play"></i> Apply Changes</button>
+        </div>
+        <div className={`vis_editor__dirty_controls-message${dirty ? '-dirty' : ''}`}>
+          {applyMessage}
+        </div>
+      </div>
+    );
+
     return (
       <div>
         <div
@@ -83,6 +111,7 @@ class EditorVisualization extends Component {
           className="vis_editor__visualization">
           {body}
         </div>
+        {applyButton}
         <div
           className="vis_editor__visualization-draghandle"
           onMouseDown={this.handleMouseDown}
@@ -99,10 +128,14 @@ EditorVisualization.propTypes = {
   onBrush: PropTypes.func,
   onChange: PropTypes.func,
   onPaginate: PropTypes.func,
+  onCommit: PropTypes.func,
+  onToggleAutoApply: PropTypes.func,
   pageNumber: PropTypes.number,
   sort: PropTypes.object,
   onSort: PropTypes.func,
-  visData: PropTypes.object
+  visData: PropTypes.object,
+  dirty: PropTypes.bool,
+  autoApply: PropTypes.bool
 };
 
 export default EditorVisualization;

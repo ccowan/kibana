@@ -88,6 +88,7 @@ class IndexingOptions extends Component {
                 value={model.from_value} />
               <div className="vis_editor__row_item" style={{ marginLeft: 5 }}>
                 <Select
+                  clearable={false}
                   options={timeSpanUnits}
                   onChange={handleSelectChange('from_units')}
                   value={model.from_units}/>
@@ -101,6 +102,7 @@ class IndexingOptions extends Component {
                 value={model.to_value} />
               <div className="vis_editor__row_item" style={{ marginLeft: 5 }}>
                 <Select
+                  clearable={false}
                   options={timeSpanUnits}
                   onChange={handleSelectChange('to_units')}
                   value={model.to_units}/>
@@ -116,6 +118,7 @@ class IndexingOptions extends Component {
               <div className="vis_editor__label">Indexing Frequency</div>
               <div className="vis_editor__row_item">
                 <Select
+                  clearable={false}
                   options={frequencyOptions}
                   onChange={handleSelectChange('indexing_frequency')}
                   value={model.indexing_frequency}/>

@@ -9,7 +9,15 @@ app.directive('summarizeEditor', () => {
   return {
     restrict: 'E',
     link: ($scope, $el) => {
-      const addToState = ['sort', 'pageNumber', 'embedded', 'fields', 'visData'];
+      const addToState = [
+        'autoApply',
+        'dirty',
+        'sort',
+        'pageNumber',
+        'embedded',
+        'fields',
+        'visData'
+      ];
       const Component = addScope(Editor, $scope, addToState);
       const handlePaginate = (pageNumber) => {
         $scope.$evalAsync(() => $scope.setPage(pageNumber));
@@ -20,9 +28,17 @@ app.directive('summarizeEditor', () => {
       const handleSort = sort => {
         $scope.$evalAsync(() => $scope.setSort(sort));
       };
+      const handleToggleAutoApply = () => {
+        $scope.$evalAsync(() => $scope.toggleAutoApply());
+      };
+      const handleCommit = () => {
+        $scope.$evalAsync(() => $scope.commit());
+      };
       render(<Component
         model={$scope.model}
         onPaginate={handlePaginate}
+        onToggleAutoApply={handleToggleAutoApply}
+        onCommit={handleCommit}
         onSort={handleSort}
         onChange={handleChange} />, $el[0]);
       $scope.$on('$destroy', () => {

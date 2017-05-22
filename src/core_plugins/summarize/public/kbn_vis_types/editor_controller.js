@@ -5,6 +5,7 @@ import _ from 'lodash';
 import angular from 'angular';
 import { createNewSummarize } from '../lib/create_new_summarize';
 import { FilterBarQueryFilterProvider } from 'ui/filter_bar/query_filter';
+const AUTO_APPLY_KEY = 'summarize_autoApply';
 
 const app = uiModules.get('kibana/summarize', ['kibana']);
 app.controller('SummarizeEditorController', (
@@ -13,9 +14,12 @@ app.controller('SummarizeEditorController', (
   $scope,
   Private,
   timefilter,
+  localStorage,
   metricsExecutor
 ) => {
 
+  const autoApply = localStorage.get(AUTO_APPLY_KEY);
+  $scope.autoApply = autoApply != null ? autoApply : true;
   $scope.embedded = $location.search().embed === 'true';
   const queryFilter = Private(FilterBarQueryFilterProvider);
   const createFetch = Private(require('../lib/fetch'));
@@ -49,12 +53,27 @@ app.controller('SummarizeEditorController', (
       $scope.model = createNewSummarize();
       angular.copy($scope.model, $scope.vis._editableVis.params);
     }
+    fetch();
   }
 
-  $scope.$watchCollection('model', newValue => {
+  $scope.commit = () => {
+    fetch();
+    $scope.dirty = false;
+  };
+
+  $scope.toggleAutoApply = () => {
+    $scope.autoApply = !$scope.autoApply;
+    localStorage.set(AUTO_APPLY_KEY, $scope.autoApply);
+  };
+
+  $scope.$watchCollection('model', (newValue, oldValue) => {
     angular.copy(newValue, $scope.vis._editableVis.params);
     $scope.stageEditableVis();
-    debouncedFetch();
+    $scope.dirty = !_.isEqual(newValue, oldValue);
+    if ($scope.dirty && $scope.autoApply) {
+      debouncedFetch();
+      $scope.dirty = false;
+    }
 
     const patternsToFetch = [];
     // Fetch any missing index patterns

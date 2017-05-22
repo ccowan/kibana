@@ -27,6 +27,10 @@ class Editor extends Component {
           pageNumber={this.props.pageNumber}
           onSort={this.props.onSort}
           sort={this.props.sort}
+          onToggleAutoApply={this.props.onToggleAutoApply}
+          onCommit={this.props.onCommit}
+          dirty={this.props.dirty}
+          autoApply={this.props.autoApply}
           onChange={handleChange} />
         <EditorPanel
           fields={this.props.fields}
@@ -47,7 +51,11 @@ Editor.propTypes = {
   pageNumber: PropTypes.number,
   sort: PropTypes.object,
   onSort: PropTypes.func,
-  visData: PropTypes.object
+  visData: PropTypes.object,
+  onCommit: PropTypes.func,
+  onToggleAutoApply: PropTypes.func,
+  dirty: PropTypes.bool,
+  autoApply: PropTypes.bool
 };
 
 export default Editor;

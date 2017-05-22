@@ -7,6 +7,7 @@ export default function handleResponseBody(panel) {
     if (resp.error) {
       const err = new Error(resp.error.type);
       err.response = JSON.stringify(resp);
+      console.log(err);
       throw err;
     }
     return panel.columns.map(column => {
