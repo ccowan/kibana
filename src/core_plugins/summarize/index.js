@@ -18,12 +18,17 @@ export default function (kibana) {
       return Joi.object({
         enabled: Joi.boolean().default(true),
         indexing: Joi.boolean().default(true),
-        checkInterval: Joi.number().default(10000),
-        logTags: Joi.string().default('summarize'),
+        logTags: Joi.array().items(Joi.string()).default(['summarize']),
         logQueries: Joi.boolean().default(false),
+        queue: Joi.object({
+          index: Joi.string().default('summarize-queue'),
+          checkInterval: Joi.number().default(10000),
+          jobTimeout: Joi.number().default(10000),
+          startWorkers: Joi.boolean().default(true),
+          startWatcher: Joi.boolean().default(true),
+        }).default(),
         elasticsearch: Joi.object({
           customHeaders: Joi.object().default({}),
-          index_pattern: Joi.string().default('.monitoring-es-2-*'),
           logQueries: Joi.boolean().default(false),
           requestHeadersWhitelist: Joi.array().items().single().default(DEFAULT_REQUEST_HEADERS),
           url: Joi.string().uri({ scheme: ['http', 'https'] }), // if empty, use Kibana's connection config
@@ -52,7 +57,7 @@ export default function (kibana) {
       dataAPI(server);
       createClient(server);
       if (config.get('summarize.indexing')) {
-        processVisualizations(server);
+        processVisualizations(this, server);
       }
     }
 

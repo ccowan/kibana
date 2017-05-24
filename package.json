@@ -118,6 +118,7 @@
     "elasticsearch": "13.0.1",
     "elasticsearch-browser": "13.0.1",
     "encode-uri-query": "1.0.0",
+    "esqueue": "2.0.1",
     "even-better": "7.0.2",
     "expiry-js": "0.1.7",
     "exports-loader": "0.6.2",
