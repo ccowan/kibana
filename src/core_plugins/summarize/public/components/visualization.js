@@ -32,6 +32,11 @@ class Visualization extends Component {
     if (model.display_field) {
       rowDisplay = _.get(row, `${model.display_field}`, rowId);
     }
+    if (model.drilldown_dashboard) {
+      let url = `#/dashboard/${model.drilldown_dashboard}`;
+      url += `?_a=(query:(query_string:(query:'${model.id_field}:${rowId}')))`;
+      rowDisplay = (<a href={url}>{rowDisplay}</a>);
+    }
     const keys = Object.keys(row.data);
     const columns = keys.map(key => {
       const item = row.data[key];

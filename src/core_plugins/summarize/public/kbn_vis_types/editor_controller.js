@@ -23,6 +23,7 @@ app.controller('SummarizeEditorController', (
   $scope.embedded = $location.search().embed === 'true';
   const queryFilter = Private(FilterBarQueryFilterProvider);
   const createFetch = Private(require('../lib/fetch'));
+  const fetchDashboards = Private(require('../lib/fetch_dashboards'));
   const fetch = () => {
     const fn = createFetch($scope);
     return fn().then((resp) => {
@@ -54,6 +55,7 @@ app.controller('SummarizeEditorController', (
       angular.copy($scope.model, $scope.vis._editableVis.params);
     }
     fetch();
+    fetchDashboards($scope);
   }
 
   $scope.commit = () => {
@@ -88,6 +90,7 @@ app.controller('SummarizeEditorController', (
 
   $scope.visData = {};
   $scope.fields = {};
+  $scope.dashboards = [];
   $scope.pageNumber = 1;
   $scope.sort = { field: null, order: 'asc' };
 

@@ -1,15 +1,22 @@
 import React, { PropTypes } from 'react';
 import FieldSelect from './aggs/field_select';
 import IndexPattern from '../../../metrics/public/components/index_pattern';
+import Select from 'react-select';
 import createSelectHandler from './lib/create_select_handler';
 import createTextHandler from './lib/create_text_handler';
 import YesNo from './yes_no';
 function PanelOptions(props) {
-  const { model, fields, onChange } = props;
+  const { dashboards, model, fields, onChange } = props;
   const handleSelectChange = createSelectHandler(props.onChange);
   const handleTextChange = createTextHandler(props.onChange);
   const indexPattern = model.index_pattern;
   const label = model.label || '';
+  const dashboardOptions = dashboards.map(doc => {
+    return {
+      label: doc.title,
+      value: doc.id
+    };
+  });
   let fieldIdClassName;
   if (!model.id_field) {
     fieldIdClassName = 'summarize__selectError';
@@ -65,6 +72,15 @@ function PanelOptions(props) {
           name="ignore_global_filter"
           onChange={props.onChange}/>
       </div>
+      <div className="vis_editor__row">
+        <div className="vis_editor__label">Drilldown Dashboard</div>
+        <div className="vis_editor__row_item">
+          <Select
+            onChange={handleSelectChange('drilldown_dashboard')}
+            options={dashboardOptions}
+            value={model.drilldown_dashboard} />
+        </div>
+      </div>
     </div>
   );
 }
@@ -73,7 +89,8 @@ PanelOptions.propTypes = {
   fields: PropTypes.object,
   model: PropTypes.object,
   visData: PropTypes.object,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  dashboards: PropTypes.array
 };
 
 export default PanelOptions;

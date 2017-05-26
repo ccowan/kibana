@@ -10,6 +10,7 @@ app.directive('summarizeEditor', () => {
     restrict: 'E',
     link: ($scope, $el) => {
       const addToState = [
+        'dashboards',
         'autoApply',
         'dirty',
         'sort',

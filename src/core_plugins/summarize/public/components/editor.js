@@ -33,6 +33,7 @@ class Editor extends Component {
           autoApply={this.props.autoApply}
           onChange={handleChange} />
         <EditorPanel
+          dashboards={this.props.dashboards}
           fields={this.props.fields}
           model={model}
           visData={this.props.visData}
@@ -55,7 +56,8 @@ Editor.propTypes = {
   onCommit: PropTypes.func,
   onToggleAutoApply: PropTypes.func,
   dirty: PropTypes.bool,
-  autoApply: PropTypes.bool
+  autoApply: PropTypes.bool,
+  dashboards: PropTypes.array
 };
 
 export default Editor;

@@ -35,6 +35,7 @@ class EditorPanel extends Component {
     } else {
       view = (
         <PanelOptions
+          dashboards={this.props.dashboards}
           fields={this.props.fields}
           onChange={this.props.onChange}
           model={this.props.model}
@@ -64,7 +65,8 @@ EditorPanel.propTypes = {
   fields: PropTypes.object,
   model: PropTypes.object,
   visData: PropTypes.object,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  dashboards: PropTypes.array
 };
 
 export default EditorPanel;
