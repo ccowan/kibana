@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { visWithSplits } from '../../vis_with_splits';
 import tickFormatter from '../../lib/tick_formatter';
 import _ from 'lodash';
 import Metric from 'plugins/metrics/visualizations/components/metric';
@@ -70,4 +69,4 @@ MetricVisualization.propTypes = {
   visData: PropTypes.object
 };
 
-export default visWithSplits(MetricVisualization);
+export default MetricVisualization;
