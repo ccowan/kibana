@@ -29,6 +29,7 @@ function MetricVisualization(props) {
   const { backgroundColor, model, visData } = props;
   const colors = getColors(props);
   const series = _.get(visData, `${model.id}.series`, [])
+    .filter(row => row)
     .map((row, i) => {
       const seriesDef = model.series.find(s => _.includes(row.id, s.id));
       const newProps = {};
@@ -40,7 +41,8 @@ function MetricVisualization(props) {
     });
   const params = {
     metric: series[0],
-    reversed: props.reversed
+    reversed: props.reversed,
+    additionalLabel: props.additionalLabel
   };
   if (series[1]) {
     params.secondary = series[1];
@@ -63,6 +65,7 @@ function MetricVisualization(props) {
 MetricVisualization.propTypes = {
   backgroundColor: PropTypes.string,
   className: PropTypes.string,
+  additionalLabel: PropTypes.string,
   model: PropTypes.object,
   onBrush: PropTypes.func,
   onChange: PropTypes.func,
