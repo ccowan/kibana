@@ -4,9 +4,13 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import { InfraMetricData } from '../../graphql/types';
+import { InfraMetricData, InfraMetricsExplorerResponse } from '../../graphql/types';
 import { InfraFrameworkRequest } from '../adapters/framework/adapter_types';
-import { InfraMetricsAdapter, InfraMetricsRequestOptions } from '../adapters/metrics/adapter_types';
+import {
+  InfraMetricsAdapter,
+  InfraMetricsExplorerRequestOptions,
+  InfraMetricsRequestOptions,
+} from '../adapters/metrics/adapter_types';
 
 export class InfraMetricsDomain {
   private adapter: InfraMetricsAdapter;
@@ -20,5 +24,12 @@ export class InfraMetricsDomain {
     options: InfraMetricsRequestOptions
   ): Promise<InfraMetricData[]> {
     return await this.adapter.getMetrics(req, options);
+  }
+
+  public async getCustomMetrics(
+    req: InfraFrameworkRequest,
+    options: InfraMetricsExplorerRequestOptions
+  ): Promise<InfraMetricsExplorerResponse> {
+    return await this.adapter.getCustomMetrics(req, options);
   }
 }

@@ -7,11 +7,21 @@
 import { i18n } from '@kbn/i18n';
 import { flatten } from 'lodash';
 
-import { InfraMetric, InfraMetricData, InfraNodeType } from '../../../graphql/types';
+import {
+  InfraMetric,
+  InfraMetricData,
+  InfraMetricsExplorerResponse,
+  InfraNodeType,
+} from '../../../graphql/types';
 import { InfraBackendFrameworkAdapter, InfraFrameworkRequest } from '../framework';
-import { InfraMetricsAdapter, InfraMetricsRequestOptions } from './adapter_types';
+import {
+  InfraMetricsAdapter,
+  InfraMetricsExplorerRequestOptions,
+  InfraMetricsRequestOptions,
+} from './adapter_types';
 import { checkValidNode } from './lib/check_valid_node';
 import { InvalidNodeError } from './lib/errors';
+import { getGroupings } from './lib/get_groupings';
 import { metricModels } from './models';
 
 export class KibanaMetricsAdapter implements InfraMetricsAdapter {
@@ -32,7 +42,7 @@ export class KibanaMetricsAdapter implements InfraMetricsAdapter {
     };
     const indexPattern = `${options.sourceConfiguration.metricAlias},${
       options.sourceConfiguration.logAlias
-    }`;
+      }`;
     const timeField = options.sourceConfiguration.fields.timestamp;
     const interval = options.timerange.interval;
     const nodeField = fields[options.nodeType];
@@ -91,5 +101,18 @@ export class KibanaMetricsAdapter implements InfraMetricsAdapter {
         });
       })
       .then(result => flatten(result));
+  }
+
+  public async getCustomMetrics(
+    req: InfraFrameworkRequest,
+    options: InfraMetricsExplorerRequestOptions
+  ): Promise<InfraMetricsExplorerResponse> {
+    const search = <Aggregation>(searchOptions: object) =>
+      this.framework.callWithRequest<{}, Aggregation>(req, 'search', searchOptions);
+    const groupings = await getGroupings(search, options);
+    return {
+      series: groupings.series.map(series => ({ rows: [], columns: [], ...series })),
+      pageInfo: groupings.pageInfo,
+    };
   }
 }

@@ -68,6 +68,8 @@ export interface InfraSource {
   map?: InfraResponse | null;
 
   metrics: InfraMetricData[];
+  /** Service for the Metrics Explorer */
+  metricsExplorer: InfraMetricsExplorerResponse;
 }
 /** A set of configuration options for an infrastructure data source */
 export interface InfraSourceConfiguration {
@@ -269,6 +271,50 @@ export interface InfraDataPoint {
   value?: number | null;
 }
 
+export interface InfraMetricsExplorerResponse {
+  series: (InfraMetricsExplorerSeries | null)[];
+
+  pageInfo: InfraMetricsExplorerPageInfo;
+}
+
+export interface InfraMetricsExplorerSeries {
+  id: string;
+
+  columns?: (InfraMetricsExporerColumn | null)[] | null;
+
+  rows?: (InfraMetricsExplorerRow | null)[] | null;
+}
+
+export interface InfraMetricsExporerColumn {
+  name: string;
+
+  type: string;
+}
+
+export interface InfraMetricsExplorerRow {
+  values: InfraMetricsExplorerValue[];
+}
+
+export interface InfraMetricsExplorerString {
+  key: string;
+
+  stringValue?: string | null;
+}
+
+export interface InfraMetricsExplorerFloat {
+  key: string;
+
+  floatValue?: number | null;
+}
+
+export interface InfraMetricsExplorerPageInfo {
+  total: number;
+
+  afterKey?: string | null;
+
+  hasMore?: boolean | null;
+}
+
 export interface Mutation {
   /** Create a new source of infrastructure data */
   createSource: CreateSourceResult;
@@ -333,6 +379,14 @@ export interface InfraPathFilterInput {
 export interface InfraMetricInput {
   /** The type of metric */
   type: InfraMetricType;
+}
+
+export interface InfraMetricsExplorerMetricInput {
+  field: string;
+
+  aggregation: string;
+
+  rate: boolean;
 }
 /** The source to be created */
 export interface CreateSourceInput {
@@ -464,6 +518,19 @@ export interface MetricsInfraSourceArgs {
 
   metrics: InfraMetric[];
 }
+export interface MetricsExplorerInfraSourceArgs {
+  timerange: InfraTimerangeInput;
+
+  filterQuery?: string | null;
+
+  groupBy?: string | null;
+
+  metrics: InfraMetricsExplorerMetricInput[];
+
+  limit?: number | null;
+
+  afterKey?: string | null;
+}
 export interface IndexFieldsInfraSourceStatusArgs {
   indexType?: InfraIndexType | null;
 }
@@ -569,6 +636,8 @@ export enum InfraOperator {
 /** A segment of the log entry message */
 export type InfraLogMessageSegment = InfraLogMessageFieldSegment | InfraLogMessageConstantSegment;
 
+export type InfraMetricsExplorerValue = InfraMetricsExplorerString | InfraMetricsExplorerFloat;
+
 // ====================================================
 // END: Typescript template
 // ====================================================
@@ -629,6 +698,8 @@ export namespace InfraSourceResolvers {
     map?: MapResolver<InfraResponse | null, TypeParent, Context>;
 
     metrics?: MetricsResolver<InfraMetricData[], TypeParent, Context>;
+    /** Service for the Metrics Explorer */
+    metricsExplorer?: MetricsExplorerResolver<InfraMetricsExplorerResponse, TypeParent, Context>;
   }
 
   export type IdResolver<R = string, Parent = InfraSource, Context = InfraContext> = Resolver<
@@ -750,6 +821,25 @@ export namespace InfraSourceResolvers {
     timerange: InfraTimerangeInput;
 
     metrics: InfraMetric[];
+  }
+
+  export type MetricsExplorerResolver<
+    R = InfraMetricsExplorerResponse,
+    Parent = InfraSource,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context, MetricsExplorerArgs>;
+  export interface MetricsExplorerArgs {
+    timerange: InfraTimerangeInput;
+
+    filterQuery?: string | null;
+
+    groupBy?: string | null;
+
+    metrics: InfraMetricsExplorerMetricInput[];
+
+    limit?: number | null;
+
+    afterKey?: string | null;
   }
 }
 /** A set of configuration options for an infrastructure data source */
@@ -1377,6 +1467,146 @@ export namespace InfraDataPointResolvers {
   export type ValueResolver<
     R = number | null,
     Parent = InfraDataPoint,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace InfraMetricsExplorerResponseResolvers {
+  export interface Resolvers<Context = InfraContext, TypeParent = InfraMetricsExplorerResponse> {
+    series?: SeriesResolver<(InfraMetricsExplorerSeries | null)[], TypeParent, Context>;
+
+    pageInfo?: PageInfoResolver<InfraMetricsExplorerPageInfo, TypeParent, Context>;
+  }
+
+  export type SeriesResolver<
+    R = (InfraMetricsExplorerSeries | null)[],
+    Parent = InfraMetricsExplorerResponse,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type PageInfoResolver<
+    R = InfraMetricsExplorerPageInfo,
+    Parent = InfraMetricsExplorerResponse,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace InfraMetricsExplorerSeriesResolvers {
+  export interface Resolvers<Context = InfraContext, TypeParent = InfraMetricsExplorerSeries> {
+    id?: IdResolver<string, TypeParent, Context>;
+
+    columns?: ColumnsResolver<(InfraMetricsExporerColumn | null)[] | null, TypeParent, Context>;
+
+    rows?: RowsResolver<(InfraMetricsExplorerRow | null)[] | null, TypeParent, Context>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = InfraMetricsExplorerSeries,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type ColumnsResolver<
+    R = (InfraMetricsExporerColumn | null)[] | null,
+    Parent = InfraMetricsExplorerSeries,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type RowsResolver<
+    R = (InfraMetricsExplorerRow | null)[] | null,
+    Parent = InfraMetricsExplorerSeries,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace InfraMetricsExporerColumnResolvers {
+  export interface Resolvers<Context = InfraContext, TypeParent = InfraMetricsExporerColumn> {
+    name?: NameResolver<string, TypeParent, Context>;
+
+    type?: TypeResolver<string, TypeParent, Context>;
+  }
+
+  export type NameResolver<
+    R = string,
+    Parent = InfraMetricsExporerColumn,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type TypeResolver<
+    R = string,
+    Parent = InfraMetricsExporerColumn,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace InfraMetricsExplorerRowResolvers {
+  export interface Resolvers<Context = InfraContext, TypeParent = InfraMetricsExplorerRow> {
+    values?: ValuesResolver<InfraMetricsExplorerValue[], TypeParent, Context>;
+  }
+
+  export type ValuesResolver<
+    R = InfraMetricsExplorerValue[],
+    Parent = InfraMetricsExplorerRow,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace InfraMetricsExplorerStringResolvers {
+  export interface Resolvers<Context = InfraContext, TypeParent = InfraMetricsExplorerString> {
+    key?: KeyResolver<string, TypeParent, Context>;
+
+    stringValue?: StringValueResolver<string | null, TypeParent, Context>;
+  }
+
+  export type KeyResolver<
+    R = string,
+    Parent = InfraMetricsExplorerString,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type StringValueResolver<
+    R = string | null,
+    Parent = InfraMetricsExplorerString,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace InfraMetricsExplorerFloatResolvers {
+  export interface Resolvers<Context = InfraContext, TypeParent = InfraMetricsExplorerFloat> {
+    key?: KeyResolver<string, TypeParent, Context>;
+
+    floatValue?: FloatValueResolver<number | null, TypeParent, Context>;
+  }
+
+  export type KeyResolver<
+    R = string,
+    Parent = InfraMetricsExplorerFloat,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type FloatValueResolver<
+    R = number | null,
+    Parent = InfraMetricsExplorerFloat,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace InfraMetricsExplorerPageInfoResolvers {
+  export interface Resolvers<Context = InfraContext, TypeParent = InfraMetricsExplorerPageInfo> {
+    total?: TotalResolver<number, TypeParent, Context>;
+
+    afterKey?: AfterKeyResolver<string | null, TypeParent, Context>;
+
+    hasMore?: HasMoreResolver<boolean | null, TypeParent, Context>;
+  }
+
+  export type TotalResolver<
+    R = number,
+    Parent = InfraMetricsExplorerPageInfo,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type AfterKeyResolver<
+    R = string | null,
+    Parent = InfraMetricsExplorerPageInfo,
+    Context = InfraContext
+  > = Resolver<R, Parent, Context>;
+  export type HasMoreResolver<
+    R = boolean | null,
+    Parent = InfraMetricsExplorerPageInfo,
     Context = InfraContext
   > = Resolver<R, Parent, Context>;
 }

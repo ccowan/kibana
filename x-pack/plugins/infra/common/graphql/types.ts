@@ -40,6 +40,8 @@ export interface InfraSource {
   map?: InfraResponse | null;
 
   metrics: InfraMetricData[];
+  /** Service for the Metrics Explorer */
+  metricsExplorer: InfraMetricsExplorerResponse;
 }
 /** A set of configuration options for an infrastructure data source */
 export interface InfraSourceConfiguration {
@@ -241,6 +243,50 @@ export interface InfraDataPoint {
   value?: number | null;
 }
 
+export interface InfraMetricsExplorerResponse {
+  series: (InfraMetricsExplorerSeries | null)[];
+
+  pageInfo: InfraMetricsExplorerPageInfo;
+}
+
+export interface InfraMetricsExplorerSeries {
+  id: string;
+
+  columns?: (InfraMetricsExporerColumn | null)[] | null;
+
+  rows?: (InfraMetricsExplorerRow | null)[] | null;
+}
+
+export interface InfraMetricsExporerColumn {
+  name: string;
+
+  type: string;
+}
+
+export interface InfraMetricsExplorerRow {
+  values: InfraMetricsExplorerValue[];
+}
+
+export interface InfraMetricsExplorerString {
+  key: string;
+
+  stringValue?: string | null;
+}
+
+export interface InfraMetricsExplorerFloat {
+  key: string;
+
+  floatValue?: number | null;
+}
+
+export interface InfraMetricsExplorerPageInfo {
+  total: number;
+
+  afterKey?: string | null;
+
+  hasMore?: boolean | null;
+}
+
 export interface Mutation {
   /** Create a new source of infrastructure data */
   createSource: CreateSourceResult;
@@ -305,6 +351,14 @@ export interface InfraPathFilterInput {
 export interface InfraMetricInput {
   /** The type of metric */
   type: InfraMetricType;
+}
+
+export interface InfraMetricsExplorerMetricInput {
+  field: string;
+
+  aggregation: string;
+
+  rate: boolean;
 }
 /** The source to be created */
 export interface CreateSourceInput {
@@ -436,6 +490,19 @@ export interface MetricsInfraSourceArgs {
 
   metrics: InfraMetric[];
 }
+export interface MetricsExplorerInfraSourceArgs {
+  timerange: InfraTimerangeInput;
+
+  filterQuery?: string | null;
+
+  groupBy?: string | null;
+
+  metrics: InfraMetricsExplorerMetricInput[];
+
+  limit?: number | null;
+
+  afterKey?: string | null;
+}
 export interface IndexFieldsInfraSourceStatusArgs {
   indexType?: InfraIndexType | null;
 }
@@ -540,6 +607,8 @@ export enum InfraOperator {
 
 /** A segment of the log entry message */
 export type InfraLogMessageSegment = InfraLogMessageFieldSegment | InfraLogMessageConstantSegment;
+
+export type InfraMetricsExplorerValue = InfraMetricsExplorerString | InfraMetricsExplorerFloat;
 
 // ====================================================
 // END: Typescript template
