@@ -4,9 +4,19 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import { EuiButtonGroup } from '@elastic/eui';
-import { InjectedIntl, injectI18n } from '@kbn/i18n/react';
-import React from 'react';
+import {
+  EuiContextMenuPanelDescriptor,
+  EuiContextMenu,
+  EuiPopover,
+  EuiFilterButton,
+  EuiFilterGroup,
+  EuiIcon,
+  EuiFlexGroup,
+  EuiFlexItem,
+} from '@elastic/eui';
+import { i18n } from '@kbn/i18n';
+import { FormattedMessage } from '@kbn/i18n/react';
+import React, { useCallback, useState } from 'react';
 import {
   InfraSnapshotMetricInput,
   InfraSnapshotMetricType,
@@ -15,52 +25,99 @@ import {
 } from '../../graphql/types';
 
 interface Props {
-  intl: InjectedIntl;
   nodeType: InfraNodeType;
   changeNodeType: (nodeType: InfraNodeType) => void;
   changeGroupBy: (groupBy: InfraSnapshotGroupbyInput[]) => void;
   changeMetric: (metric: InfraSnapshotMetricInput) => void;
 }
 
-export class WaffleNodeTypeSwitcherClass extends React.PureComponent<Props> {
-  public render() {
-    const { intl } = this.props;
+const navItems = [
+  {
+    id: InfraNodeType.host,
+    label: i18n.translate('xpack.infra.waffle.nodeTypeSwitcher.hostsLabel', {
+      defaultMessage: 'Hosts',
+    }),
+    icon: 'storage',
+  },
+  {
+    id: InfraNodeType.pod,
+    label: 'Kubernetes',
+    icon: 'logoKubernetes',
+  },
+  {
+    id: InfraNodeType.container,
+    label: 'Docker',
+    icon: 'logoDocker',
+  },
+];
 
-    const nodeOptions = [
-      {
-        id: InfraNodeType.host,
-        label: intl.formatMessage({
-          id: 'xpack.infra.waffle.nodeTypeSwitcher.hostsLabel',
-          defaultMessage: 'Hosts',
-        }),
-      },
-      {
-        id: InfraNodeType.pod,
-        label: 'Kubernetes',
-      },
-      {
-        id: InfraNodeType.container,
-        label: 'Docker',
-      },
-    ];
+export const WaffleNodeTypeSwitcher = ({
+  changeNodeType,
+  changeMetric,
+  changeGroupBy,
+  nodeType,
+}: Props) => {
+  const createClickHandlerFor = (id: InfraNodeType) => () => {
+    changeNodeType(id);
+    changeGroupBy([]);
+    changeMetric({ type: InfraSnapshotMetricType.cpu });
+  };
+  const onClickDepends = [changeNodeType, changeGroupBy, changeMetric];
+  const closePopover = () => setPopoerState(false);
+  const openPopover = () => setPopoerState(true);
+  const [isPopoverOpen, setPopoerState] = useState<boolean>(false);
 
-    return (
-      <EuiButtonGroup
-        legend="Node type selection"
-        color="primary"
-        options={nodeOptions}
-        idSelected={this.props.nodeType}
-        onChange={this.handleClick}
-        buttonSize="m"
-      />
+  const panels: EuiContextMenuPanelDescriptor[] = [
+    {
+      id: 0,
+      title: '',
+      items: navItems.map(item => ({
+        name: item.label,
+        icon: item.icon,
+        onClick: useCallback(createClickHandlerFor(item.id), onClickDepends),
+      })),
+    },
+  ];
+
+  const currentNodeType = navItems.find(item => item.id === nodeType);
+  if (!currentNodeType) {
+    throw new Error(
+      i18n.translate('xpack.infra.waffle.nodeTypeSwitcher.error', {
+        defaultMessage: '"{nodeType}" is not a valid node type.',
+        values: { nodeType },
+      })
     );
   }
 
-  private handleClick = (nodeType: string) => {
-    this.props.changeNodeType(nodeType as InfraNodeType);
-    this.props.changeGroupBy([]);
-    this.props.changeMetric({ type: InfraSnapshotMetricType.cpu });
-  };
-}
+  const button = (
+    <EuiFilterGroup>
+      <EuiFilterButton onClick={openPopover} hasActiveFilters>
+        <FormattedMessage
+          id="xpack.infra.waffle.nodeTypeSwitcher.filterLabel"
+          defaultMessage="View"
+        />
+      </EuiFilterButton>
+      <EuiFilterButton iconType="arrowDown" onClick={openPopover}>
+        <EuiFlexGroup alignItems="center" gutterSize="s">
+          <EuiFlexItem>
+            <EuiIcon type={currentNodeType.icon} />
+          </EuiFlexItem>
+          <EuiFlexItem>{currentNodeType.label}</EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFilterButton>
+    </EuiFilterGroup>
+  );
 
-export const WaffleNodeTypeSwitcher = injectI18n(WaffleNodeTypeSwitcherClass);
+  return (
+    <EuiPopover
+      isOpen={isPopoverOpen}
+      id="nodeTypePanel"
+      button={button}
+      panelPaddingSize="none"
+      closePopover={closePopover}
+      anchorPosition="downLeft"
+    >
+      <EuiContextMenu initialPanelId={0} panels={panels} />
+    </EuiPopover>
+  );
+};

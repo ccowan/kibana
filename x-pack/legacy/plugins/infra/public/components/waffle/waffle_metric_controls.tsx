@@ -170,27 +170,30 @@ export const WaffleMetricControls = injectI18n(
         },
       ];
       const button = (
-        <EuiFilterButton iconType="arrowDown" onClick={this.handleToggle}>
-          <FormattedMessage
-            id="xpack.infra.waffle.metricButtonLabel"
-            defaultMessage="Metric: {selectedMetric}"
-            values={{ selectedMetric: currentLabel.text }}
-          />
-        </EuiFilterButton>
+        <EuiFilterGroup>
+          <EuiFilterButton onClick={this.handleToggle} hasActiveFilters>
+            <FormattedMessage
+              id="xpack.infra.waffle.metricButtonLabel"
+              defaultMessage="Metric"
+              values={{ selectedMetric: currentLabel.text }}
+            />
+          </EuiFilterButton>
+          <EuiFilterButton iconType="arrowDown" onClick={this.handleToggle}>
+            {currentLabel.text}
+          </EuiFilterButton>
+        </EuiFilterGroup>
       );
 
       return (
-        <EuiFilterGroup>
-          <EuiPopover
-            isOpen={this.state.isPopoverOpen}
-            id="metricsPanel"
-            button={button}
-            panelPaddingSize="none"
-            closePopover={this.handleClose}
-          >
-            <EuiContextMenu initialPanelId={0} panels={panels} />
-          </EuiPopover>
-        </EuiFilterGroup>
+        <EuiPopover
+          isOpen={this.state.isPopoverOpen}
+          id="metricsPanel"
+          button={button}
+          panelPaddingSize="none"
+          closePopover={this.handleClose}
+        >
+          <EuiContextMenu initialPanelId={0} panels={panels} />
+        </EuiPopover>
       );
     }
     private handleClose = () => {

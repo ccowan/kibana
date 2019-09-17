@@ -5,7 +5,6 @@
  */
 
 import {
-  EuiBadge,
   EuiContextMenu,
   EuiContextMenuPanelDescriptor,
   EuiContextMenuPanelItemDescriptor,
@@ -149,32 +148,35 @@ export const WaffleGroupByControls = injectI18n(
             .filter(o => o != null)
             // In this map the `o && o.field` is totally unnecessary but Typescript is
             // too stupid to realize that the filter above prevents the next map from being null
-            .map(o => <EuiBadge key={o && o.field}>{o && o.text}</EuiBadge>)
+            .map(o => o && o.text)
+            .join(', ')
         ) : (
           <FormattedMessage id="xpack.infra.waffle.groupByAllTitle" defaultMessage="All" />
         );
       const button = (
-        <EuiFilterButton iconType="arrowDown" onClick={this.handleToggle}>
-          <FormattedMessage
-            id="xpack.infra.waffle.groupByButtonLabel"
-            defaultMessage="Group By: "
-          />
-          {buttonBody}
-        </EuiFilterButton>
+        <EuiFilterGroup>
+          <EuiFilterButton onClick={this.handleToggle} hasActiveFilters>
+            <FormattedMessage
+              id="xpack.infra.waffle.groupByButtonLabel"
+              defaultMessage="Group By"
+            />
+          </EuiFilterButton>
+          <EuiFilterButton iconType="arrowDown" onClick={this.handleToggle}>
+            {buttonBody}
+          </EuiFilterButton>
+        </EuiFilterGroup>
       );
 
       return (
-        <EuiFilterGroup>
-          <EuiPopover
-            isOpen={this.state.isPopoverOpen}
-            id="groupByPanel"
-            button={button}
-            panelPaddingSize="none"
-            closePopover={this.handleClose}
-          >
-            <StyledContextMenu initialPanelId="firstPanel" panels={panels} />
-          </EuiPopover>
-        </EuiFilterGroup>
+        <EuiPopover
+          isOpen={this.state.isPopoverOpen}
+          id="groupByPanel"
+          button={button}
+          panelPaddingSize="none"
+          closePopover={this.handleClose}
+        >
+          <StyledContextMenu initialPanelId="firstPanel" panels={panels} />
+        </EuiPopover>
       );
     }
 
