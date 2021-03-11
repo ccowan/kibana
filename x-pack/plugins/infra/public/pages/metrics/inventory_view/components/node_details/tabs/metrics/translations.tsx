@@ -23,6 +23,10 @@ export const OUTBOUND_METRIC_NAME = i18n.translate('xpack.infra.nodeDetails.metr
   defaultMessage: 'Outbound',
 });
 
+export const LOG_RATE_METRIC_NAME = i18n.translate('xpack.infra.nodeDetails.metrics.logRate', {
+  defaultMessage: 'Log Rate',
+});
+
 export const USED_MEMORY_METRIC_NAME = i18n.translate('xpack.infra.nodeDetails.metrics.used', {
   defaultMessage: 'Used',
 });
@@ -39,6 +43,12 @@ export const NETWORK_CHART_TITLE = i18n.translate(
   'xpack.infra.nodeDetails.metrics.charts.networkTitle',
   {
     defaultMessage: 'Network',
+  }
+);
+export const LOG_RATE_CHART_TITLE = i18n.translate(
+  'xpack.infra.nodeDetails.metrics.charts.logRateTitle',
+  {
+    defaultMessage: 'Log Rate',
   }
 );
 export const MEMORY_CHART_TITLE = i18n.translate(
